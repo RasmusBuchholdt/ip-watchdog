@@ -1,4 +1,5 @@
 {
   "cron_schedule": "*/1 * * * *",
+  "hosts": [""],
   "hook_url": ""
 }
