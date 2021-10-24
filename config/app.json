@@ -1,5 +1,8 @@
 {
   "cron_schedule": "*/1 * * * *",
   "hosts": [""],
-  "hook_url": ""
+  "hook_url": "",
+  "ping_cfg": {
+    "timeout": 10
+  }
 }

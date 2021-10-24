@@ -5,6 +5,7 @@ const ping = require('ping');
 const config = require('../config/app.json');
 
 const CRON_SCHEDULE: string = config.cron_schedule;
+const pingCfg = config.ping_cfg;
 
 class Watchdog {
   start() {
@@ -14,7 +15,7 @@ class Watchdog {
           if (!isAlive) {
             sendWebhookMessage('Server Status', `${host} is down!`)
           }
-        });
+        }, pingCfg);
       });
     });
   }
