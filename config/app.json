@@ -1,8 +1,15 @@
 {
   "cron_schedule": "*/1 * * * *",
-  "hosts": [""],
+  "hosts": [
+    ""
+  ],
   "hook_url": "",
   "ping_cfg": {
     "timeout": 10
+  },
+  "discord": {
+    "bot_name": "Bot boy",
+    "bot_avatar_url": "https://cdn.discordapp.com/embed/avatars/0.png",
+    "message_color": "#00b0f4"
   }
 }

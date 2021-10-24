@@ -5,8 +5,8 @@ const hook = new Webhook(config.hook_url);
 export function sendWebhookMessage(title: string, message: string): void {
     const embed = new MessageBuilder()
         .setTitle(title)
-        .setAuthor('Bot boy', 'https://cdn.discordapp.com/embed/avatars/0.png', 'https://www.google.com')
-        .setColor('#00b0f4')
+        .setAuthor(config.discord.bot_name, config.discord.bot_avatar_url)
+        .setColor(config.discord.message_color)
         .setDescription(message)
         .setTimestamp();
     hook.send(embed);
