@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/RasmusBuchholdt/ip-watchdog#readme",
   "dependencies": {
+    "discord-webhook-node": "^1.1.8",
     "node-cron": "^2.0.3"
   },
   "devDependencies": {

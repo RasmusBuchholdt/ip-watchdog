@@ -1,3 +1,4 @@
 {
-  "cron_schedule": "*/1 * * * *"
+  "cron_schedule": "*/1 * * * *",
+  "hook_url": ""
 }
