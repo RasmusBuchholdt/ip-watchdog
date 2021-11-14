@@ -1,3 +1,4 @@
+import { HostInstance } from './_models/host-instance';
 import { sendWebhookMessage } from './_utils/discord-webhook';
 
 const cron = require('node-cron');
@@ -9,22 +10,48 @@ const pingCfg = config.ping_cfg;
 
 class Watchdog {
 
-  private downedHosts: string[] = [];
+  private hostInstances: HostInstance[] = [];
 
   start() {
+    this.setupHosts();
+    // Every CRON cycle
     cron.schedule(CRON_SCHEDULE, () => {
-      config.hosts.forEach((host: string) => {
-        ping.sys.probe(host, (isAlive: boolean) => {
-          if (isAlive && this.downedHosts.includes(host)) {
-            sendWebhookMessage('Server Status', `${host} is up again!`);
-            this.downedHosts.splice(this.downedHosts.indexOf(host), 1);
-          } else if (!isAlive && !this.downedHosts.includes(host)) {
-            this.downedHosts.push(host);
-            sendWebhookMessage('Server Status', `${host} is down!`);
+      console.log(`Pinging ${this.hostInstances.length} hosts`);
+      this.hostInstances.forEach((hostInstance) => {
+        // Pings the server
+        console.log(`Pinged ${hostInstance.host}`);
+        ping.sys.probe(hostInstance.host, (isAlive: boolean) => {
+          // If the server is up and is already marked as down
+          if (isAlive && hostInstance.down) {
+            sendWebhookMessage('Server Status', `${hostInstance.host} is up again!`);
+            hostInstance.down = false;
+            // If the server is down and we have not marked it yet
+          } else if (!isAlive && !hostInstance.down) {
+            // Check if it has been marked x times
+            if (hostInstance.marks < 3) {
+              hostInstance.marks++;
+            } else if (hostInstance.marks === 3) {
+              sendWebhookMessage('Server Status', `${hostInstance.host} is down!`);
+              hostInstance.down = true;
+            }
+            // If the server is just up we reset the marks
+          } else if (isAlive) {
+            hostInstance.marks = 0;
           }
         }, pingCfg);
       });
     });
+  }
+
+  private setupHosts(): void {
+    config.hosts.forEach((host: string) => {
+      this.hostInstances.push({
+        host,
+        down: false,
+        marks: 0
+      });
+    });
+    console.log(`Successfully set up ${this.hostInstances.length} hosts`);
   }
 }
 
