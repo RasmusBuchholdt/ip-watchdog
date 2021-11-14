@@ -30,9 +30,9 @@ class Watchdog {
             // If the server is down and we have not marked it yet
           } else if (!isAlive && !hostInstance.down) {
             // Check if it has been marked x times
-            if (hostInstance.marks < 3) {
+            if (hostInstance.marks < config.required_marks_for_down) {
               hostInstance.marks++;
-            } else if (hostInstance.marks === 3) {
+            } else if (hostInstance.marks === config.required_marks_for_down) {
               sendWebhookMessage('Server Status', `${hostInstance.host} is down!`);
               hostInstance.down = true;
             }
