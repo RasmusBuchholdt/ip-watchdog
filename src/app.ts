@@ -1,11 +1,10 @@
 import { HostInstance } from './_models/host-instance';
 import { sendWebhookMessage } from './_utils/discord-webhook';
 
-const cron = require('node-cron');
 const ping = require('ping');
 const config = require('../config/app.json');
 
-const CRON_SCHEDULE: string = config.cron_schedule;
+const PING_CYCLE_TIME: number = config.ping_cycle_time;
 const pingCfg = config.ping_cfg;
 
 class Watchdog {
@@ -14,8 +13,11 @@ class Watchdog {
 
   start() {
     this.setupHosts();
-    // Every CRON cycle
-    cron.schedule(CRON_SCHEDULE, () => {
+    this.runCycle();
+  }
+
+  private runCycle(): void {
+    setInterval(() => {
       console.log(`Pinging ${this.hostInstances.length} hosts`);
       this.hostInstances.forEach((hostInstance) => {
         // Pings the server
@@ -40,7 +42,7 @@ class Watchdog {
           }
         }, pingCfg);
       });
-    });
+    }, PING_CYCLE_TIME * 1000);
   }
 
   private setupHosts(): void {
